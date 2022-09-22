@@ -13,6 +13,6 @@ class Api::V1::RecordsController < ApplicationController
   def set_record
     @record =
       current_api_v1_user.records.find_by(job_id: current_api_v1_user.job_id) ||
-        current_api_v1_user.records.create(job_id: current_api_v1_user.job_id)
+        current_api_v1_user.records.create!(job_id: current_api_v1_user.job_id)
   end
 end

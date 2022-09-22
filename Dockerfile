@@ -35,11 +35,13 @@ COPY . /app
 RUN mkdir -p tmp/sockets
 RUN mkdir tmp/pids
 
-# Add a script to be executed every time the container starts.
-# COPY entrypoint.sh /usr/bin/
-# RUN chmod +x /usr/bin/entrypoint.sh
-# ENTRYPOINT ["entrypoint.sh"]
+# for dev
+# COPY dev.sh /usr/bin/
+# RUN chmod +x /usr/bin/dev.sh
+# ENTRYPOINT ["dev.sh"]
 # EXPOSE 3000
+# # Configure the main process to run when running the image
+# CMD ["rails", "server", "-b", "0.0.0.0"]
 
 # # nginx
 # groupaddコマンドで新しいグループを作成
@@ -49,13 +51,7 @@ RUN groupadd nginx
 RUN useradd -g nginx nginx
 ADD nginx/nginx.conf /etc/nginx/nginx.conf
 
-# RUN chmod +x /app/entrypoint.sh
-
-# EXPOSE 80
-
-# CMD ["/app/entrypoint.sh"]
-
-# 以下を追記
+# 以下を追加 for gcp cloud run
 COPY start.sh /usr/bin/
 RUN chmod +x /usr/bin/start.sh
 ENTRYPOINT ["start.sh"]

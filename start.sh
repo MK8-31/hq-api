@@ -8,7 +8,8 @@ fi
 
 # # migration
 bin/rails db:migrate RAILS_ENV=production
-
+bin/rails db:migrate:reset RAILS_ENV=production
+bin/rails db:seed RAILS_ENV=production
 # # assets precompile
 # bundle exec rake assets:precompile RAILS_ENV=production
 
