@@ -6,6 +6,7 @@ class Api::V1::TaskRecordsController < ApplicationController
   def create
     latest_task_record = @task.task_records.order(created_at: :desc).limit(1)[0]
 
+     # 同じ日に記録がないかを確認する
     if latest_task_record && latest_task_record.created_at.today?
       render json: {
                status: 'ERROR',
@@ -17,7 +18,6 @@ class Api::V1::TaskRecordsController < ApplicationController
 
     task_record = @task.task_records.build
 
-    # 同じ日に記録がないかを確認する
     if task_record.save
       # taskのlast_timeを更新
       @task.update(last_time: task_record.created_at)
@@ -39,13 +39,13 @@ class Api::V1::TaskRecordsController < ApplicationController
 
       # 週に何回タスクを達成したか
 
-      @task.update(days_a_week: @task.days_a_week += 1)
+      @task.update(days_a_week: @task.days_a_week + 1)
 
       # 週に4回以上タスクを行うとボーナス
-      exp += @record.lv * 100 if @task.days_a_week >= 4
+      exp += @record.level * 100 if @task.days_a_week >= 4
 
       if @task.days_a_week == 4
-        @task.update(running_weeks: @task.running_weeks += 1)
+        @task.update(running_weeks: @task.running_weeks + 1)
 
         # 続いている週数によってボーナス
         exp += @task.running_weeks * 100
@@ -53,7 +53,7 @@ class Api::V1::TaskRecordsController < ApplicationController
 
       # 連続してタスクを達成によるボーナス
       if (Date.today - @task.last_time).to_i == 1
-        @task.update(running_days: @task.running_days += 1)
+        @task.update(running_days: @task.running_days + 1)
         exp += @task.running_days * @record.level
       end
 
@@ -67,12 +67,15 @@ class Api::V1::TaskRecordsController < ApplicationController
 
       @record.update(exp: exp, level: level)
 
+      Rails.logger.info @record
+
       render json: {
                status: 'SUCCESS',
                data: @record,
                is_level_up: is_level_up,
              }
     else
+      Rails.logger.info task_record.errors
       render json: { status: 'ERROR', data: task_record.errors }
     end
   end

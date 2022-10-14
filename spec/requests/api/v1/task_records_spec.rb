@@ -26,6 +26,27 @@ RSpec.describe 'Api::V1::TaskRecords', type: :request do
       expect(@task1.reload.last_time).not_to eq(last_time)
     end
 
+    it 'ログイン状態でタスクの記録を1週間連続で作成する' do
+      7.times do |i|
+        travel_to Date.new(2022,1,1+i) do
+          auth_token = login(@current_user)
+          params = { task: { id: @task1.id } }
+          last_time = @task1.last_time
+          expect {
+            post '/api/v1/task_records', params: params, headers: auth_token
+          }.to change(TaskRecord, :count).by(+1)
+
+          json = JSON.parse(response.body)
+          data = json['data']
+
+          expect(response.status).to eq(200)
+
+          # タスクのlast_timeが書き変わるか
+          expect(@task1.reload.last_time).not_to eq(last_time)
+        end
+      end
+    end
+
     it 'ログイン状態で同じ日に2回同じタスクの記録を作成する' do
       auth_token = login(@current_user)
       params = { task: { id: @task1.id } }
