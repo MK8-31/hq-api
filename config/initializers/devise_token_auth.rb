@@ -62,7 +62,6 @@ DeviseTokenAuth.setup do |config|
     expires: 7.days,
     # chromeにおいて、trueでもlocalhostであればhttpでもOK
     secure: false,
-    same_site: :strict,
   }
 
   # By default, only Bearer Token authentication is implemented out of the box.
