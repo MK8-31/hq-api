@@ -9,7 +9,7 @@ DeviseTokenAuth.setup do |config|
 
   # By default, users will need to re-authenticate after 2 weeks. This setting
   # determines how long tokens will remain valid after they are issued.
-  config.token_lifespan = 2.weeks
+  config.token_lifespan = 1.weeks
 
   # Limiting the token_cost to just 4 in testing will increase the performance of
   # your test suite dramatically. The possible cost value is within range from 4
@@ -49,6 +49,19 @@ DeviseTokenAuth.setup do |config|
     'expiry': 'expiry',
     'uid': 'uid',
     'token-type': 'token-type',
+    authorization: "authorization"
+  }
+
+  # 認証情報をCookieで送受信するかどうか
+  config.cookie_enabled = true
+
+  # 認証トークンを含むCookieの属性を設定
+  config.cookie_attributes = {
+    httponly: true,
+    # 利便性を考慮し７日
+    expires: 7.days,
+    # chromeにおいて、localhostであればhttpでもOK
+    secure: true,
   }
 
   # By default, only Bearer Token authentication is implemented out of the box.
@@ -59,6 +72,6 @@ DeviseTokenAuth.setup do |config|
   # By default DeviseTokenAuth will not send confirmation email, even when including
   # devise confirmable module. If you want to use devise confirmable module and
   # send email, set it to true. (This is a setting for compatibility)
-  config.send_confirmation_email = true
+  config.send_confirmation_email = false
   config.default_confirm_success_url = 'http://localhost:3000'
 end

@@ -39,6 +39,9 @@ module Backend
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # クッキーが使えるように設定
+    config.middleware.use ActionDispatch::Cookies
+
     # added
     # rails apiはデフォルトではセッション認証機能がない、以下を追加するとセッション認証ができるようになる
     # config.session_store :cookie_store, key: '_interslice_session'
