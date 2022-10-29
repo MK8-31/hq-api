@@ -56,13 +56,27 @@ DeviseTokenAuth.setup do |config|
   config.cookie_enabled = true
 
   # 認証トークンを含むCookieの属性を設定
-  config.cookie_attributes = {
-    httponly: true,
-    # 利便性を考慮し７日
-    expires: 7.days,
-    # chromeにおいて、trueでもlocalhostであればhttpでもOK
-    secure: false,
-  }
+  if Rails.env.development? || Rails.env.test?
+    # localhost:3000 からのアクセスを許容する
+    config.cookie_attributes = {
+      httponly: true,
+      # 利便性を考慮し７日
+      expires: 7.days,
+      # chromeにおいて、trueでもlocalhostであればhttpでもOK
+      secure: true,
+      domain: 'localhost'
+    }
+  else
+    config.cookie_attributes = {
+      httponly: true,
+      # 利便性を考慮し７日
+      expires: 7.days,
+      # chromeにおいて、trueでもlocalhostであればhttpでもOK
+      secure: true,
+      domain: 'habituation-quest.tk'
+    }
+  end
+
 
   # By default, only Bearer Token authentication is implemented out of the box.
   # If, however, you wish to integrate with legacy Devise authentication, you can
