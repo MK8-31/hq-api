@@ -60,8 +60,8 @@ DeviseTokenAuth.setup do |config|
     httponly: true,
     # 利便性を考慮し７日
     expires: 7.days,
-    # chromeにおいて、localhostであればhttpでもOK
-    secure: true,
+    # chromeにおいて、trueでもlocalhostであればhttpでもOK
+    secure: false,
     same_site: :strict,
   }
 
