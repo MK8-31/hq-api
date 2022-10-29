@@ -57,7 +57,7 @@ DeviseTokenAuth.setup do |config|
 
   # 認証トークンを含むCookieの属性を設定
   if Rails.env.development? || Rails.env.test?
-    # localhost:3000 からのアクセスを許容する
+    # 開発・テスト環境
     config.cookie_attributes = {
       httponly: true,
       # 利便性を考慮し７日
@@ -68,6 +68,7 @@ DeviseTokenAuth.setup do |config|
       same_site: :strict
     }
   else
+    # 本番環境
     config.cookie_attributes = {
       httponly: true,
       # 利便性を考慮し７日
