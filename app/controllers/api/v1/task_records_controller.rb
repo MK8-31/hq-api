@@ -18,19 +18,30 @@ class Api::V1::TaskRecordsController < ApplicationController
 
     task_record = @task.task_records.build
 
-    if task_record.save
-      # タスクの記録の更新とユーザの記録(経験値・レベル)を更新する
-      @record, is_level_up = @task.task_record_save(task_record, @record)
+    ActiveRecord::Base.transaction do
+      if task_record.save
+        # タスクの記録の更新とユーザの記録(経験値・レベル)を更新する
 
-      render json: {
-               status: 'SUCCESS',
-               data: @record,
-               is_level_up: is_level_up,
-             }
-    else
-      Rails.logger.info task_record.errors
-      render json: { status: 'ERROR', data: task_record.errors }
+        @record, is_level_up = @task.task_record_save(task_record, @record)
+
+        render json: {
+                status: 'SUCCESS',
+                data: @record,
+                is_level_up: is_level_up,
+              }
+      else
+        Rails.logger.info task_record.errors
+        render json: { status: 'ERROR', data: task_record.errors }
+      end
     end
+
+  rescue
+    render json: {
+      status: 'ERROR',
+      message: '処理の途中でエラーが発生したため、記録されませんでした',
+    },
+    status: 500
+    return
   end
 
   private
