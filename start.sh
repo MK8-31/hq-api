@@ -14,7 +14,7 @@ bin/rails db:migrate RAILS_ENV=production
 # bundle exec rake assets:precompile RAILS_ENV=production
 
 # テストログインユーザを追加
-bin/rails users:create_test_login_users
+# bin/rails users:create_test_login_users
 
 # Remove a potentially pre-existing server.pid for Rails.
 rm -f tmp/pids/server.pid
