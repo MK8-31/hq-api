@@ -5,8 +5,8 @@ namespace :users do
     begin
       ApplicationRecord.transaction do
         20.times do |n|
-          nickname = "テストユーザ#{n + 1}"
-          email = "testuser-#{n + 1}@example.com"
+          nickname = "お試しログインユーザ#{n + 1}"
+          email = "test_login_user-#{n + 1}@example.com"
           password = 'password'
           User.create!(
             nickname: nickname,
