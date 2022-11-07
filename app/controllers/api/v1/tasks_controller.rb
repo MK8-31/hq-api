@@ -1,9 +1,9 @@
 class Api::V1::TasksController < ApplicationController
-  before_action :authenticate_api_v1_user!
+  before_action :authenticate_user!
   before_action :set_task, only: %i[show update destroy]
 
   def index
-    tasks = current_api_v1_user.tasks.all
+    tasks = current_user.tasks.all
     render json: { status: 'SUCCESS', message: 'Loaded tasks', data: tasks }
   end
 
@@ -12,7 +12,7 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def create
-    task = current_api_v1_user.tasks.build(task_params)
+    task = current_user.tasks.build(task_params)
     if task.save
       render json: { status: 'SUCCESS', data: task }
     else
