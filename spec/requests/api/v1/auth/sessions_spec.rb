@@ -48,6 +48,8 @@ RSpec.describe "Api::V1::Auth::Sessions", type: :request do
       email1 =  hash_response_body["data"]["email"]
       # STDOUT.puts email1
       # STDOUT.puts
+      # current_sign_in_atが秒単位で記録されているため、早すぎると意図した通りにいかない
+      # なのでsleepを使って1秒待つ
       sleep 1
       post api_v1_auth_test_login_path
       hash_response_body = JSON.parse(response.body)
