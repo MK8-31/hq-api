@@ -1,5 +1,5 @@
 class Api::V1::TaskRecordsController < ApplicationController
-  before_action :authenticate_api_v1_user!
+  before_action :authenticate_user!
   before_action :set_task, only: %i[create]
   before_action :set_record, only: %i[create]
 
@@ -56,7 +56,7 @@ class Api::V1::TaskRecordsController < ApplicationController
 
     def set_record
       @record =
-        current_api_v1_user.records.find_by(job_id: current_api_v1_user.job_id) ||
-          current_api_v1_user.records.create(job_id: current_api_v1_user.job_id)
+        current_user.records.find_by(job_id: current_user.job_id) ||
+          current_user.records.create(job_id: current_user.job_id)
     end
 end
