@@ -1,4 +1,4 @@
-# for production
+# for dev and test
 
 FROM ruby:3.1.1
 # ベースにするイメージを指定
@@ -37,21 +37,14 @@ COPY . /app
 RUN mkdir -p tmp/sockets
 RUN mkdir tmp/pids
 
-# # nginx
-# groupaddコマンドで新しいグループを作成
-RUN groupadd nginx
-# useraddコマンドで新しいユーザーを作成
-# -g, --gid GROUP プライマリグループのグループ名かグループIDを指定
-RUN useradd -g nginx nginx
-ADD nginx/nginx.conf /etc/nginx/nginx.conf
+# for dev
+COPY dev.sh /usr/bin/
+RUN chmod +x /usr/bin/dev.sh
+ENTRYPOINT ["dev.sh"]
+EXPOSE 3000
+# Configure the main process to run when running the image
+CMD ["rails", "server", "-b", "0.0.0.0"]
 
-# 以下を追加 for gcp cloud run
-COPY start.sh /usr/bin/
-RUN chmod +x /usr/bin/start.sh
-ENTRYPOINT ["start.sh"]
-EXPOSE 80
-
-CMD ["bin/start"]
 
 
 # docker-compose run web rails new . --webpack=vue --force --database=mysql --skip-bundle

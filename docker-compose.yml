@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: db_test
+    image: mysql:8.0.28
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "backend_test"
+    command: --default-authentication-plugin=mysql_native_password # 認証方式を8系以前のものにする。
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3307:3306
+  api:
+    container_name: api_test
+    build:
+      context: .
+      dockerfile: "Dockerfile.dev_test"
+    image: api_test
+    # command: bundle exec rails server -b 0.0.0.0
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./:/app:cached
+      - bundle_data:/usr/local/bundle:cached # 名前付きVolume
+      - log-data:/var/log
+      - ./vendor # 匿名Volume
+      - ./tmp
+      - ./log
+    environment:
+      TZ: Asia/Tokyo
+    depends_on:
+      - db
+    ports:
+    # ポートフォワード
+    #「ポートフォワーディング」とは、インターネットから特定のポート番号宛てに届いたパケットを、あらかじめ設定しておいたLAN側の機器に転送する機能です。
+      - 3030:3000
+
+# cloud buildで他のステップから操作する時用
+# networks:
+#   default:
+#     external:
+#       name: cloudbuild
+
+volumes:
+  mysql_data:
+  bundle_data:
+  log-data:
