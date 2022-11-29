@@ -58,22 +58,17 @@ class Task < ApplicationRecord
   end
 
   def is_reset_date(task_record)
-    # 次のリセット日までの日数
-    days_until_next_reset_date = 7 - ((task_record.created_at.to_date - self.created_at.to_date) % 7)
+    # 週の始まりを日曜日とする
+    # TODO: 週の始まりを選べる機能を追加
 
-    # 週の変わり目の場合
-    return true if days_until_next_reset_date == 7
+    # 記録した日が日曜日
+    return true if task_record.created_at.to_date.wday == 0
 
-    # 次のリセット日
-    next_reset_date = task_record.created_at.to_date + days_until_next_reset_date
+    # 記録日の週の日曜日を取得
+    this_monday = task_record.created_at.to_date - task_record.created_at.to_date.wday
 
-    # 次のリセット日から前回の記録日が７日よりも離れていた場合
-    return true if !self.last_time.nil? && (next_reset_date - self.last_time.to_date) > 7
-
-    Rails.logger.debug task_record.created_at.to_date
-    Rails.logger.debug self.created_at.to_date
-    Rails.logger.debug days_until_next_reset_date
-    Rails.logger.debug next_reset_date
+    # 前回の記録が今週の日曜日よりも前
+    return true if !self.last_time.nil? && self.last_time.to_date < this_monday
 
     return false
   end
