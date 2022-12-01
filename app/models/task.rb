@@ -45,7 +45,7 @@ class Task < ApplicationRecord
 
     # レベルの計算式、レベル1からレベル２に必要な経験値を１２、倍率を1.５倍に設定
     level =
-      p ((Math.log(1 - (exp / 12.0) * (1 - 1.5)) / Math.log(1.5)) + 1).floor
+      p ((Math.log(1 - (exp / 12.0) * (1 - 1.5)) / Math.log(1.5)) + 1).round
 
     is_level_up = (previous_level < level) ? true : false
 
