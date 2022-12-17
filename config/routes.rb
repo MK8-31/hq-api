@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     post 'api/v1/auth/test_login', to: 'api/v1/auth/sessions#test_login'
+    get 'api/v1/auth/get_user_info', to: 'api/v1/auth/sessions#get_user_info'
   end
 
   namespace :api do
